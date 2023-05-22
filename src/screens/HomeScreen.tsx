@@ -1,14 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
-import { useLayoutEffect } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 
+import GetStarted from '../components/atoms/GetStarted';
 import HomeHeader from '../components/molecules/HomeHeader';
 import MainLayout from '../layouts/MainLayout';
 
 function HomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
-  useLayoutEffect(() => {}, []);
+  const onPressGetStartedHandler = () => {
+    navigation.navigate('Discover');
+  };
 
   return (
     <MainLayout>
@@ -16,12 +19,18 @@ function HomeScreen() {
         <HomeHeader />
       </View>
       <View style={styles.bottom}>
-        <Image
-          resizeMode="stretch"
+        <Animatable.Image
+          animation="fadeIn"
+          easing="ease-in-out"
+          resizeMode="contain"
           style={styles.image}
           source={require('../../assets/images/traveler.png')}
         />
       </View>
+      <GetStarted
+        viewStyle={styles.getStarted}
+        onPress={onPressGetStartedHandler}
+      />
     </MainLayout>
   );
 }
@@ -41,7 +50,9 @@ const styles = StyleSheet.create({
   },
   image: {
     height: '100%',
-    width: '90%',
+  },
+  getStarted: {
+    position: 'absolute',
   },
 });
 
