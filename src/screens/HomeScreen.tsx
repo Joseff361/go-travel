@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
+import { Traveler } from '../../assets/images';
 import GetStarted from '../components/atoms/GetStarted';
 import HomeHeader from '../components/molecules/HomeHeader';
 import MainLayout from '../layouts/MainLayout';
@@ -24,7 +25,7 @@ function HomeScreen() {
           easing="ease-in-out"
           resizeMode="contain"
           style={styles.image}
-          source={require('../../assets/images/traveler.png')}
+          source={Traveler}
         />
       </View>
       <GetStarted
