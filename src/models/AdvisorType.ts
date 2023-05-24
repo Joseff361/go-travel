@@ -1,0 +1,5 @@
+export enum AdvisorType {
+  RESTAURANTS = 'RESTAURANTS',
+  HOTELS = 'HOTELS',
+  ATRACTIONS = 'ATRACTIONS',
+}
