@@ -6,12 +6,13 @@ import { Traveler } from '../../assets/images';
 import GetStarted from '../components/atoms/GetStarted';
 import HomeHeader from '../components/molecules/HomeHeader';
 import MainLayout from '../layouts/MainLayout';
+import { AppNavigation, NativeStackRoutes } from '../navigation';
 
 function HomeScreen() {
-  const navigation = useNavigation<any>();
+  const navigation = useNavigation<AppNavigation>();
 
   const onPressGetStartedHandler = () => {
-    navigation.navigate('Discover');
+    navigation.navigate(NativeStackRoutes.DISCOVER);
   };
 
   return (

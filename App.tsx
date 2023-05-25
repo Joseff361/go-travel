@@ -6,11 +6,12 @@ import { StatusBar, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Colors } from './src/constants/colors';
 import { FontsMap } from './src/constants/fonts';
+import { NativeStackRoutes, RootNativeStackParamList } from './src/navigation';
 import DetailsScreen from './src/screens/DetailsScreen';
 import DiscoverScreen from './src/screens/DiscoverScreen';
 import HomeScreen from './src/screens/HomeScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootNativeStackParamList>();
 
 export default function App() {
   const [fontsLoaded] = useFonts(FontsMap);
@@ -24,12 +25,18 @@ export default function App() {
       <StatusBar barStyle="light-content" backgroundColor={Colors.BLACK} />
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Home"
+          initialRouteName={NativeStackRoutes.HOME}
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Discover" component={DiscoverScreen} />
-          <Stack.Screen name="Details" component={DetailsScreen} />
+          <Stack.Screen name={NativeStackRoutes.HOME} component={HomeScreen} />
+          <Stack.Screen
+            name={NativeStackRoutes.DISCOVER}
+            component={DiscoverScreen}
+          />
+          <Stack.Screen
+            name={NativeStackRoutes.DETAILS}
+            component={DetailsScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

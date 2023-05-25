@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { AdvisorDetails } from '../../models/AdvisorDetails';
 import { Coordinates } from '../../models/Coordinates';
 import { Restaurant } from '../../models/Restaurant';
 import { TravelAdvisorService } from '../../services/TravelAdvisorService';
@@ -10,9 +11,10 @@ import AdvisorCard from '../molecules/AdvisorCard';
 
 interface Props {
   coordinates: Coordinates;
+  onPressCard: (details: AdvisorDetails) => void;
 }
 
-function Restaurants({ coordinates }: Props) {
+function Restaurants({ coordinates, onPressCard }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
   const [restaurants, setReastaurants] = useState<Restaurant[]>([]);
 
@@ -29,6 +31,14 @@ function Restaurants({ coordinates }: Props) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const onCardPressedHandler = (rst: Restaurant) => {
+    onPressCard({
+      name: rst.name || '',
+      imageUrl: rst.photo?.images.large.url || '',
+      location: rst.location_string,
+    });
   };
 
   useEffect(() => {
@@ -55,6 +65,7 @@ function Restaurants({ coordinates }: Props) {
               name={restaurant.name}
               imageUrl={restaurant.photo.images.large.url}
               location={restaurant.location_string}
+              onPress={() => onCardPressedHandler(restaurant)}
             />
           );
         })}

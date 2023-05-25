@@ -1,9 +1,15 @@
+import { useRoute } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Fonts } from '../constants/fonts';
+import { AppRoutes, NativeStackRoutes } from '../navigation';
 
 function DetailsScreen() {
+  const route = useRoute<AppRoutes[NativeStackRoutes.DETAILS]>();
+
+  console.log(route.params.details);
+
   return (
     <View style={styles.container}>
       <Text style={{ fontFamily: Fonts.RajdhaniRegular }}>DetailsScreen</Text>

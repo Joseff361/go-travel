@@ -16,11 +16,12 @@ interface Props {
   name: string;
   imageUrl: string;
   location: string;
+  onPress: () => void;
 }
 
-function AdvisorCard({ name, imageUrl, location }: Props) {
+function AdvisorCard({ name, imageUrl, location, onPress }: Props) {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.iamgeContainer}>
         <Image
           source={{ uri: imageUrl }}

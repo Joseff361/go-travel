@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -10,8 +11,10 @@ import Restaurants from '../components/organisms/Restaurants';
 import { Colors } from '../constants/colors';
 import { Fonts } from '../constants/fonts';
 import MainLayout from '../layouts/MainLayout';
+import { AdvisorDetails } from '../models/AdvisorDetails';
 import { AdvisorType } from '../models/AdvisorType';
 import { Coordinates } from '../models/Coordinates';
+import { AppNavigation, NativeStackRoutes } from '../navigation';
 
 function DiscoverScreen() {
   const [advisorType, setAdvisorType] = useState<AdvisorType>(
@@ -22,15 +25,36 @@ function DiscoverScreen() {
     longitude: '-85.9534465',
   });
 
+  const navigation = useNavigation<AppNavigation>();
+
+  const onCardPressedHandler = (details: AdvisorDetails) => {
+    navigation.navigate(NativeStackRoutes.DETAILS, { details });
+  };
+
   const content: React.ReactNode = useMemo(() => {
     if (!!coordinates) {
       switch (advisorType) {
         case AdvisorType.RESTAURANTS:
-          return <Restaurants coordinates={coordinates} />;
+          return (
+            <Restaurants
+              coordinates={coordinates}
+              onPressCard={onCardPressedHandler}
+            />
+          );
         case AdvisorType.ATRACTIONS:
-          return <Atractions coordinates={coordinates} />;
+          return (
+            <Atractions
+              coordinates={coordinates}
+              onPressCard={onCardPressedHandler}
+            />
+          );
         case AdvisorType.HOTELS:
-          return <Hotels coordinates={coordinates} />;
+          return (
+            <Hotels
+              coordinates={coordinates}
+              onPressCard={onCardPressedHandler}
+            />
+          );
       }
     } else {
       return <Placeholder message="Select a place to start searching" />;
