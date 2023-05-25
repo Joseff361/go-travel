@@ -26,13 +26,13 @@ interface Offer {
 
 export interface Hotel {
   location_id: string;
-  name: string;
+  name?: string;
   latitude: string;
   longitude: string;
   num_reviews: string;
   timezone: string;
   location_string: string;
-  photo: {
+  photo?: {
     images: {
       small: Image;
       thumbnail: Image;
