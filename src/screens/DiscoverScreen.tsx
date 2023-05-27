@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import Loader from '../components/atoms/Loader';
 import Placeholder from '../components/atoms/Placeholder';
@@ -51,6 +51,15 @@ function DiscoverScreen() {
         name: item.name || '',
         imageUrl: item.photo?.images.large.url || '',
         location: item.location_string,
+        rating: (item as Restaurant | Hotel).rating || 'No rates',
+        openNow: (item as Restaurant).open_now_text || '',
+        price: (item as Restaurant | Hotel).price_level || '',
+        bearing: item.bearing || '',
+        description: (item as Restaurant | Atraction).description || '',
+        cuisine: (item as Restaurant).cuisine || [],
+        phone: (item as Restaurant).phone || '',
+        email: (item as any).email || '',
+        address: (item as Restaurant | Atraction).address || '',
       };
     });
   };
@@ -145,18 +154,16 @@ function DiscoverScreen() {
 
   return (
     <MainLayout style={styles.container}>
-      <ScrollView>
-        <View style={styles.header}>
-          <Text style={styles.title}>Discover</Text>
-          <Text style={styles.subtitle}>the Beauty today</Text>
-        </View>
-        <DiscoverInput />
-        <AdvisorSelector
-          onAdvisorSelected={onAdvisorSelectedHandler}
-          loading={loading}
-        />
-        {content}
-      </ScrollView>
+      <View style={styles.header}>
+        <Text style={styles.title}>Discover</Text>
+        <Text style={styles.subtitle}>the Beauty today</Text>
+      </View>
+      <DiscoverInput />
+      <AdvisorSelector
+        onAdvisorSelected={onAdvisorSelectedHandler}
+        loading={loading}
+      />
+      {content}
     </MainLayout>
   );
 }

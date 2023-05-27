@@ -17,7 +17,7 @@ function HomeScreen() {
   };
 
   return (
-    <MainLayout>
+    <MainLayout scrollable={false}>
       <View style={styles.header}>
         <HomeHeader />
       </View>

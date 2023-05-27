@@ -26,7 +26,10 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName={NativeStackRoutes.HOME}
-          screenOptions={{ headerShown: false }}
+          screenOptions={{
+            headerShown: false,
+            presentation: 'transparentModal',
+          }}
         >
           <Stack.Screen name={NativeStackRoutes.HOME} component={HomeScreen} />
           <Stack.Screen
