@@ -98,7 +98,7 @@ function DetailsScreen() {
         </View>
       )}
       <View style={styles.addonContainer}>
-        {(phone.length > 0 || email.length > 0 || phone.length > 0) && (
+        {(phone.length > 0 || email.length > 0 || address.length > 0) && (
           <Text style={styles.subtitle}>Contact Information</Text>
         )}
         <Information phone={phone} email={email} address={address} />
