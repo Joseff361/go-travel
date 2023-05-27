@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import Loader from '../components/atoms/Loader';
 import Placeholder from '../components/atoms/Placeholder';
@@ -26,14 +26,11 @@ const EMPTY_RESULTS: Record<AdvisorType, AdvisorGenericItem[]> = {
 };
 
 function DiscoverScreen() {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [advisorType, setAdvisorType] = useState<AdvisorType>(
     AdvisorType.RESTAURANTS,
   );
-  const [coordinates, setCoordinates] = useState<Coordinates | null>({
-    latitude: '15.9116789',
-    longitude: '-85.9534465',
-  });
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(null);
   const [advisorGenericItems, setAdvisorGenericItems] =
     useState<Record<AdvisorType, AdvisorGenericItem[]>>(EMPTY_RESULTS);
 
@@ -41,6 +38,10 @@ function DiscoverScreen() {
 
   const onCardPressedHandler = (item: AdvisorGenericItem) => {
     navigation.navigate(NativeStackRoutes.DETAILS, { item });
+  };
+
+  const onLocationSelectedHandler = (cc: Coordinates) => {
+    setCoordinates(cc);
   };
 
   const buildAdvisorItem = (
@@ -153,17 +154,19 @@ function DiscoverScreen() {
   };
 
   return (
-    <MainLayout style={styles.container}>
+    <MainLayout style={styles.container} scrollable={false}>
       <View style={styles.header}>
         <Text style={styles.title}>Discover</Text>
         <Text style={styles.subtitle}>the Beauty today</Text>
       </View>
-      <DiscoverInput />
-      <AdvisorSelector
-        onAdvisorSelected={onAdvisorSelectedHandler}
-        loading={loading}
-      />
-      {content}
+      <DiscoverInput onLocationSelected={onLocationSelectedHandler} />
+      <ScrollView>
+        <AdvisorSelector
+          onAdvisorSelected={onAdvisorSelectedHandler}
+          loading={loading}
+        />
+        {content}
+      </ScrollView>
     </MainLayout>
   );
 }

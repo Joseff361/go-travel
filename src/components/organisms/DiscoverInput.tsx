@@ -3,10 +3,14 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 
 import { Colors } from '../../constants/colors';
 import { Fonts } from '../../constants/fonts';
+import { Coordinates } from '../../models/Coordinates';
+import { GoogleResponse } from '../../models/GoogleResponse';
 
-interface Props {}
+interface Props {
+  onLocationSelected: (cc: Coordinates) => void;
+}
 
-function DiscoverInput({}: Props) {
+function DiscoverInput({ onLocationSelected }: Props) {
   return (
     <View style={styles.container}>
       <GooglePlacesAutocomplete
@@ -20,10 +24,16 @@ function DiscoverInput({}: Props) {
         }}
         onPress={(data, details = null) => {
           // 'details' is provided when fetchDetails = true
-          console.log(details);
+          const latitude = (details as GoogleResponse).geometry.location.lat;
+          const longitude = (details as GoogleResponse).geometry.location.lng;
+
+          onLocationSelected({
+            latitude: latitude.toString(),
+            longitude: longitude.toString(),
+          });
         }}
         query={{
-          key: 'YOUR API KEY',
+          key: 'USE_YOUR_OWN_KEY_MY_FRIEND',
           language: 'en',
         }}
         styles={{
@@ -48,6 +58,7 @@ function DiscoverInput({}: Props) {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    marginBottom: 50,
   },
   input: {
     fontFamily: Fonts.RajdhaniMedium,
