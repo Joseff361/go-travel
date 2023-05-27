@@ -1,5 +1,6 @@
 import { useRoute } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Fonts } from '../constants/fonts';
@@ -8,7 +9,7 @@ import { AppRoutes, NativeStackRoutes } from '../navigation';
 function DetailsScreen() {
   const route = useRoute<AppRoutes[NativeStackRoutes.DETAILS]>();
 
-  console.log(route.params.details);
+  console.log(route.params.item);
 
   return (
     <View style={styles.container}>
@@ -27,4 +28,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetailsScreen;
+export default React.memo(DetailsScreen);

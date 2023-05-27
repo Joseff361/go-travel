@@ -20,15 +20,22 @@ interface Props {
 }
 
 function AdvisorCard({ name, imageUrl, location, onPress }: Props) {
+  const image =
+    imageUrl.length === 0 ? (
+      <View
+        style={[styles.image, { backgroundColor: Colors.GRAY_LIGHT }]}
+      ></View>
+    ) : (
+      <Image
+        source={{ uri: imageUrl }}
+        resizeMode="cover"
+        style={styles.image}
+      />
+    );
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <View style={styles.iamgeContainer}>
-        <Image
-          source={{ uri: imageUrl }}
-          resizeMode="cover"
-          style={styles.image}
-        />
-      </View>
+      <View style={styles.imageContainer}>{image}</View>
       <View style={styles.footer}>
         <Text style={styles.title} numberOfLines={1}>
           {name}
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 10,
   },
-  iamgeContainer: {
+  imageContainer: {
     width: '100%',
     height: '80%',
   },

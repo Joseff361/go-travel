@@ -1,22 +1,32 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import Loader from '../components/atoms/Loader';
 import Placeholder from '../components/atoms/Placeholder';
 import AdvisorSelector from '../components/molecules/AdvisorSelector';
-import Atractions from '../components/organisms/Atractions';
+import AdvisordCards from '../components/organisms/AdvisordCards';
 import DiscoverInput from '../components/organisms/DiscoverInput';
-import Hotels from '../components/organisms/Hotels';
-import Restaurants from '../components/organisms/Restaurants';
 import { Colors } from '../constants/colors';
 import { Fonts } from '../constants/fonts';
 import MainLayout from '../layouts/MainLayout';
-import { AdvisorDetails } from '../models/AdvisorDetails';
+import { AdvisorGenericItem } from '../models/AdvisorGenericItem';
 import { AdvisorType } from '../models/AdvisorType';
+import { Atraction } from '../models/Atraction';
 import { Coordinates } from '../models/Coordinates';
+import { Hotel } from '../models/Hotel';
+import { Restaurant } from '../models/Restaurant';
 import { AppNavigation, NativeStackRoutes } from '../navigation';
+import { TravelAdvisorService } from '../services/TravelAdvisorService';
+
+const EMPTY_RESULTS: Record<AdvisorType, AdvisorGenericItem[]> = {
+  [AdvisorType.RESTAURANTS]: [],
+  [AdvisorType.HOTELS]: [],
+  [AdvisorType.ATRACTIONS]: [],
+};
 
 function DiscoverScreen() {
+  const [loading, setLoading] = useState<boolean>(true);
   const [advisorType, setAdvisorType] = useState<AdvisorType>(
     AdvisorType.RESTAURANTS,
   );
@@ -24,42 +34,110 @@ function DiscoverScreen() {
     latitude: '15.9116789',
     longitude: '-85.9534465',
   });
+  const [advisorGenericItems, setAdvisorGenericItems] =
+    useState<Record<AdvisorType, AdvisorGenericItem[]>>(EMPTY_RESULTS);
 
   const navigation = useNavigation<AppNavigation>();
 
-  const onCardPressedHandler = (details: AdvisorDetails) => {
-    navigation.navigate(NativeStackRoutes.DETAILS, { details });
+  const onCardPressedHandler = (item: AdvisorGenericItem) => {
+    navigation.navigate(NativeStackRoutes.DETAILS, { item });
   };
 
+  const buildAdvisorItem = (
+    items: Restaurant[] | Hotel[] | Atraction[],
+  ): AdvisorGenericItem[] => {
+    return items.map(item => {
+      return {
+        name: item.name || '',
+        imageUrl: item.photo?.images.large.url || '',
+        location: item.location_string,
+      };
+    });
+  };
+
+  useEffect(() => {
+    const fetchAdvisorItems = async () => {
+      setLoading(true);
+      const results = await Promise.allSettled([
+        TravelAdvisorService.fetchRestaurantsByLatLng(
+          coordinates!.latitude,
+          coordinates!.longitude,
+        ),
+        TravelAdvisorService.fetchHotelsByLatLng(
+          coordinates!.latitude,
+          coordinates!.longitude,
+        ),
+        TravelAdvisorService.fetchAtractionsByLatLng(
+          coordinates!.latitude,
+          coordinates!.longitude,
+        ),
+      ]);
+
+      const advisorItems: Record<AdvisorType, AdvisorGenericItem[]> =
+        EMPTY_RESULTS;
+
+      results.forEach((result, index) => {
+        switch (index) {
+          case 0:
+            advisorItems[AdvisorType.RESTAURANTS] =
+              result.status === 'fulfilled'
+                ? buildAdvisorItem(result.value.data)
+                : [];
+          case 1:
+            advisorItems[AdvisorType.HOTELS] =
+              result.status === 'fulfilled'
+                ? buildAdvisorItem(result.value.data)
+                : [];
+          case 2:
+            advisorItems[AdvisorType.ATRACTIONS] =
+              result.status === 'fulfilled'
+                ? buildAdvisorItem(result.value.data)
+                : [];
+          default:
+            return;
+        }
+      });
+
+      setAdvisorGenericItems(advisorItems);
+      setLoading(false);
+    };
+
+    coordinates?.latitude && coordinates.longitude && fetchAdvisorItems();
+  }, [coordinates]);
+
   const content: React.ReactNode = useMemo(() => {
-    if (!!coordinates) {
+    if (loading) {
+      return <Loader />;
+    }
+
+    if (coordinates?.latitude && coordinates.longitude) {
+      let advisorData: AdvisorGenericItem[] = [];
+
       switch (advisorType) {
         case AdvisorType.RESTAURANTS:
-          return (
-            <Restaurants
-              coordinates={coordinates}
-              onPressCard={onCardPressedHandler}
-            />
-          );
+          advisorData = advisorGenericItems.RESTAURANTS;
+          break;
         case AdvisorType.ATRACTIONS:
-          return (
-            <Atractions
-              coordinates={coordinates}
-              onPressCard={onCardPressedHandler}
-            />
-          );
+          advisorData = advisorGenericItems.ATRACTIONS;
+          break;
         case AdvisorType.HOTELS:
-          return (
-            <Hotels
-              coordinates={coordinates}
-              onPressCard={onCardPressedHandler}
-            />
-          );
+          advisorData = advisorGenericItems.HOTELS;
+          break;
+        default:
+          advisorData = [];
       }
+
+      return (
+        <AdvisordCards
+          key={advisorType}
+          items={advisorData}
+          onPressCard={onCardPressedHandler}
+        />
+      );
     } else {
       return <Placeholder message="Select a place to start searching" />;
     }
-  }, [coordinates, advisorType]);
+  }, [coordinates, advisorType, advisorGenericItems, loading]);
 
   const onAdvisorSelectedHandler = (type: AdvisorType) => {
     setAdvisorType(type);
@@ -73,7 +151,10 @@ function DiscoverScreen() {
           <Text style={styles.subtitle}>the Beauty today</Text>
         </View>
         <DiscoverInput />
-        <AdvisorSelector onAdvisorSelected={onAdvisorSelectedHandler} />
+        <AdvisorSelector
+          onAdvisorSelected={onAdvisorSelectedHandler}
+          loading={loading}
+        />
         {content}
       </ScrollView>
     </MainLayout>
@@ -100,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscoverScreen;
+export default React.memo(DiscoverScreen);

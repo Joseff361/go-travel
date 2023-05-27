@@ -16,24 +16,30 @@ const screenWidth = Dimensions.get('screen').width;
 
 interface Props {
   onAdvisorSelected: (type: AdvisorType) => void;
+  loading: boolean;
 }
 
-function AdvisorSelector({ onAdvisorSelected }: Props) {
+function AdvisorSelector({ onAdvisorSelected, loading }: Props) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => onAdvisorSelected(AdvisorType.RESTAURANTS)}
+        disabled={loading}
       >
         <Image source={Restaurant} resizeMode="contain" style={styles.image} />
         <Text style={styles.text}>Restaurants</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onAdvisorSelected(AdvisorType.ATRACTIONS)}
+        disabled={loading}
       >
         <Image source={Atraction} resizeMode="contain" style={styles.image} />
         <Text style={styles.text}>Atractions</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => onAdvisorSelected(AdvisorType.HOTELS)}>
+      <TouchableOpacity
+        onPress={() => onAdvisorSelected(AdvisorType.HOTELS)}
+        disabled={loading}
+      >
         <Image source={Hotel} resizeMode="contain" style={styles.image} />
         <Text style={styles.text}>Hotels</Text>
       </TouchableOpacity>

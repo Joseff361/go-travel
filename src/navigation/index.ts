@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AdvisorDetails } from '../models/AdvisorDetails';
+import { AdvisorGenericItem } from '../models/AdvisorGenericItem';
 
 export enum NativeStackRoutes {
   HOME = 'HomeScreen',
@@ -12,7 +12,7 @@ export type RootNativeStackParamList = {
   [NativeStackRoutes.HOME]: undefined;
   [NativeStackRoutes.DISCOVER]: undefined;
   [NativeStackRoutes.DETAILS]: {
-    details: AdvisorDetails;
+    item: AdvisorGenericItem;
   };
 };
 

@@ -19,17 +19,30 @@ export class TravelAdvisorService {
     }
   }
 
+  public static buildUrl(
+    endpoint: string,
+    latitude: string,
+    longitude: string,
+  ) {
+    return `${this.baseUrl}/${endpoint}/list-by-latlng?latitude=${latitude}&longitude=${longitude}&currency=USD&latitude=en_US`;
+  }
+
+  public static logRequest(url: string) {
+    console.log(`[REQUEST]: ${url}`);
+  }
+
   public static async fetchRestaurantsByLatLng(
     latitude: string,
     longitude: string,
   ): Promise<RestaurantsResponse<Restaurant>> {
-    const response = await fetch(
-      `${this.baseUrl}/restaurants/list-by-latlng?latitude=${latitude}&longitude=${longitude}&currency=USD&latitude=en_US`,
-      {
-        method: 'GET',
-        headers: { ...this.headers },
-      },
-    );
+    const url = this.buildUrl('restaurants', latitude, longitude);
+
+    this.logRequest(url);
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { ...this.headers },
+    });
 
     this.validateResponse(response);
 
@@ -40,13 +53,14 @@ export class TravelAdvisorService {
     latitude: string,
     longitude: string,
   ): Promise<RestaurantsResponse<Hotel>> {
-    const response = await fetch(
-      `${this.baseUrl}/hotels/list-by-latlng?latitude=${latitude}&longitude=${longitude}&currency=USD&latitude=en_US`,
-      {
-        method: 'GET',
-        headers: { ...this.headers },
-      },
-    );
+    const url = this.buildUrl('hotels', latitude, longitude);
+
+    this.logRequest(url);
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { ...this.headers },
+    });
 
     this.validateResponse(response);
 
@@ -57,13 +71,14 @@ export class TravelAdvisorService {
     latitude: string,
     longitude: string,
   ): Promise<RestaurantsResponse<Atraction>> {
-    const response = await fetch(
-      `${this.baseUrl}/attractions/list-by-latlng?latitude=${latitude}&longitude=${longitude}&currency=USD&latitude=en_US`,
-      {
-        method: 'GET',
-        headers: { ...this.headers },
-      },
-    );
+    const url = this.buildUrl('attractions', latitude, longitude);
+
+    this.logRequest(url);
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { ...this.headers },
+    });
 
     this.validateResponse(response);
 
